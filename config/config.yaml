@@ -1,0 +1,32 @@
+strategy:
+  ema_fast: 12
+  ema_slow: 50
+  rsi_period: 14
+  rsi_entry_min: 40
+  rsi_entry_max: 70
+  bb_period: 20
+  bb_std: 2.0
+  signal_cooldown_hours: 4
+  ema_crossover_lookback: 3
+
+stocks:
+  - COIN
+  - MSTR
+
+positions:
+  target_profit_pct: 0.07
+  stop_loss_pct: 0.05
+  max_hold_days: 5
+
+polling:
+  btc_interval_seconds: 300
+  pre_market_lookahead_min: 30
+
+notifications:
+  daily_summary_time: "16:05"
+
+logging:
+  level: INFO
+
+state:
+  file: state/positions.json

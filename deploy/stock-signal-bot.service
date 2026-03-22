@@ -1,0 +1,17 @@
+[Unit]
+Description=Stock Signal Bot (BTC->COIN/MSTR alerts)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/stock-signal-bot
+EnvironmentFile=/opt/stock-signal-bot/.env
+ExecStart=/opt/stock-signal-bot/venv/bin/python -u -m src.main
+Restart=on-failure
+RestartSec=60
+StartLimitBurst=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
