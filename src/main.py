@@ -149,7 +149,6 @@ def run() -> None:
     signal.signal(signal.SIGINT, _handle_signal)
 
     interval = config["polling"]["btc_interval_seconds"]
-    lookahead = config["polling"]["pre_market_lookahead_min"]
 
     while not _shutdown:
         try:
@@ -158,18 +157,11 @@ def run() -> None:
             # Phase A: BTC analysis (always)
             sig = strategy.analyze_btc(config)
 
-            # Phase B: Stock actions (market hours or near-open only)
-            market_open = market.is_market_open(now)
-            near_open = market.minutes_to_open(now) <= lookahead
+            # Phase B: Entry signals and position management (24/7)
+            if sig.entry and not is_in_cooldown(state, config):
+                handle_entry_signal(sig, config, state)
 
-            if market_open or near_open:
-                # Entry signals
-                if sig.entry and not is_in_cooldown(state, config):
-                    handle_entry_signal(sig, config, state)
-
-                # Manage existing positions (only during market hours)
-                if market_open:
-                    manage_positions(sig, config, state)
+            manage_positions(sig, config, state)
 
             # Daily summary
             maybe_send_daily_summary(config, state)
