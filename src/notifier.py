@@ -46,8 +46,10 @@ def send_email(subject: str, body: str) -> bool:
 
 
 def notify_entry(ticker: str, stock_price: float, btc_price: float, reason: str,
-                 stop_loss_pct: float, target_pct: float) -> bool:
-    subject = f"[STOCK-SIGNAL] BUY {ticker} @ ${stock_price:.2f} -- BTC momentum detected"
+                 stop_loss_pct: float, target_pct: float,
+                 strategy_type: str = "trend") -> bool:
+    label = "BTC momentum" if strategy_type == "trend" else "BTC oversold dip"
+    subject = f"[STOCK-SIGNAL] BUY {ticker} @ ${stock_price:.2f} -- {label}"
     body = (
         f"=== BUY SIGNAL ===\n\n"
         f"Stock: {ticker}\n"

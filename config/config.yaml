@@ -9,6 +9,12 @@ strategy:
   signal_cooldown_hours: 4
   ema_crossover_lookback: 3
 
+  # Mean-reversion (contrarian) settings
+  mean_reversion:
+    enabled: true
+    rsi_oversold: 30
+    divergence_lookback: 6
+
 stocks:
   - COIN
   - MSTR

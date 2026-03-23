@@ -55,6 +55,7 @@ def handle_entry_signal(sig: strategy.Signal, config: dict, state: dict) -> None
             reason=sig.reason,
             stop_loss_pct=pos_config["stop_loss_pct"],
             target_pct=pos_config["target_profit_pct"],
+            strategy_type=sig.strategy_type,
         )
 
         open_position(state, ticker, stock_price, sig.btc_price)
@@ -156,6 +157,14 @@ def run() -> None:
 
             # Phase A: BTC analysis (always)
             sig = strategy.analyze_btc(config)
+            log.info(
+                "BTC=%.0f EMA%d=%.0f EMA%d=%.0f RSI=%.1f BB_U=%.0f BB_L=%.0f entry=%s exit=%s",
+                sig.btc_price,
+                config["strategy"]["ema_fast"], sig.ema_fast,
+                config["strategy"]["ema_slow"], sig.ema_slow,
+                sig.rsi, sig.bb_upper, sig.bb_lower,
+                sig.entry, sig.exit_reversal,
+            )
 
             # Phase B: Entry signals and position management (24/7)
             if sig.entry and not is_in_cooldown(state, config):
