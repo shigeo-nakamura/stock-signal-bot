@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Stock Signal Bot - BTC momentum -> COIN/MSTR entry/exit alerts via email."""
+from __future__ import annotations
 
 import logging
 import signal
