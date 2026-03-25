@@ -28,9 +28,6 @@ polling:
   btc_interval_seconds: 300
   pre_market_lookahead_min: 30
 
-notifications:
-  daily_summary_time: "16:05"
-
 logging:
   level: INFO
 

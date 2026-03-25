@@ -9,7 +9,7 @@ import time
 
 from . import market, positions, strategy
 from .config import load_config
-from .notifier import notify_daily_summary, notify_entry, notify_exit
+from .notifier import notify_entry, notify_exit
 from .positions import (
     close_position,
     get_open_positions,
@@ -99,36 +99,6 @@ def manage_positions(sig: strategy.Signal, config: dict, state: dict) -> None:
             close_position(state, ticker, reason)
 
 
-def maybe_send_daily_summary(config: dict, state: dict) -> None:
-    now = now_et()
-    today = now.strftime("%Y-%m-%d")
-
-    if state.get("last_daily_summary") == today:
-        return
-
-    summary_time_str = config["notifications"]["daily_summary_time"]
-    hour, minute = map(int, summary_time_str.split(":"))
-
-    if now.hour < hour or (now.hour == hour and now.minute < minute):
-        return
-
-    if not market.is_market_open():
-        # Only send on trading days, check if market was open today
-        # If it's after close on a weekday, still send
-        if now.weekday() >= 5:
-            return
-
-    open_pos = get_open_positions(state)
-    btc_price = market.get_btc_price()
-
-    stock_prices = {}
-    for ticker in open_pos:
-        stock_prices[ticker] = market.get_stock_price(ticker)
-
-    notify_daily_summary(open_pos, btc_price, stock_prices)
-    state["last_daily_summary"] = today
-
-
 def run() -> None:
     config = load_config()
     setup_logging(config)
@@ -171,9 +141,6 @@ def run() -> None:
                 handle_entry_signal(sig, config, state)
 
             manage_positions(sig, config, state)
-
-            # Daily summary
-            maybe_send_daily_summary(config, state)
 
             # Save state
             save_state(state, state_path)

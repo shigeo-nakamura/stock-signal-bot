@@ -13,7 +13,6 @@ log = logging.getLogger(__name__)
 def _default_state() -> dict:
     return {
         "positions": {},
-        "last_daily_summary": "",
         "last_signal_time": "",
         "signal_cooldown_until": "",
     }

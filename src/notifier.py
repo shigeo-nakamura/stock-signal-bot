@@ -84,33 +84,3 @@ def notify_exit(ticker: str, entry_price: float, current_price: float,
     return send_email(subject, body)
 
 
-def notify_daily_summary(positions: dict, btc_price: float | None,
-                         stock_prices: dict[str, float | None]) -> bool:
-    from .utils import now_et
-
-    subject = f"[STOCK-SIGNAL] Daily Summary -- {now_et().strftime('%Y-%m-%d')}"
-
-    lines = ["=== DAILY SUMMARY ===\n"]
-
-    if btc_price:
-        lines.append(f"BTC Price: ${btc_price:,.0f}\n")
-
-    if not positions:
-        lines.append("No open positions.\n")
-    else:
-        lines.append("Open Positions:")
-        for ticker, pos in positions.items():
-            price = stock_prices.get(ticker)
-            if price:
-                pnl = (price - pos["entry_price"]) / pos["entry_price"]
-                direction = "+" if pnl >= 0 else ""
-                lines.append(
-                    f"  {ticker}: entry ${pos['entry_price']:.2f}, "
-                    f"current ${price:.2f}, P&L {direction}{pnl*100:.1f}%"
-                )
-            else:
-                lines.append(f"  {ticker}: entry ${pos['entry_price']:.2f}, current price unavailable")
-        lines.append("")
-
-    body = "\n".join(lines)
-    return send_email(subject, body)

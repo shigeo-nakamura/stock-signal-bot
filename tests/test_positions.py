@@ -36,7 +36,7 @@ def test_save_and_load_state():
 
 
 def test_close_position():
-    state = {"positions": {}, "last_daily_summary": "", "last_signal_time": "", "signal_cooldown_until": ""}
+    state = {"positions": {}, "last_signal_time": "", "signal_cooldown_until": ""}
     open_position(state, "MSTR", 400.0, 90000.0)
     assert len(get_open_positions(state)) == 1
 
