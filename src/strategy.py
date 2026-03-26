@@ -158,4 +158,14 @@ def analyze_btc(config: dict) -> Signal:
         except (IndexError, KeyError):
             continue
 
+    # Suppress entry signal when exit signal fires (contradictory)
+    if signal.exit_reversal and signal.entry:
+        log.info(
+            "Suppressing entry signal (%s) due to concurrent exit signal",
+            signal.strategy_type,
+        )
+        signal.entry_trend = False
+        signal.entry_reversal = False
+        signal.strategy_type = ""
+
     return signal
